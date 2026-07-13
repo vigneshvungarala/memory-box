@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Popup from "@/components/Popup";
+import ShareModal from "@/components/ShareModal";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
@@ -29,6 +30,7 @@ export default function PrivateMemoryDetail() {
   const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(true);
   const [popupConfig, setPopupConfig] = useState<{ isOpen: boolean, type: 'success', title?: string, message?: string } | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowConfetti(false), 5000);
@@ -85,11 +87,7 @@ export default function PrivateMemoryDetail() {
         </Link>
         
         <button 
-          onClick={() => {
-            const url = `${window.location.origin}/share/${item.share_token}`;
-            navigator.clipboard.writeText(url);
-            setPopupConfig({ isOpen: true, type: 'success', title: 'Link Copied!', message: 'Share link copied to clipboard!' });
-          }}
+          onClick={() => setIsShareModalOpen(true)}
           className="glass-button"
           style={{ padding: "8px 16px", fontSize: "0.95rem", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
         >
@@ -140,6 +138,22 @@ export default function PrivateMemoryDetail() {
           hideCancel={true}
         />
       )}
+
+      <ShareModal 
+        isOpen={isShareModalOpen} 
+        onClose={() => setIsShareModalOpen(false)}
+        title="Share this Memory"
+        onCopy={() => {
+          const url = `${window.location.origin}/share/${item.share_token}`;
+          navigator.clipboard.writeText(url);
+          setPopupConfig({ isOpen: true, type: 'success', title: 'Link Copied!', message: 'Share link copied to clipboard!' });
+        }}
+        onWhatsApp={() => {
+          const url = `${window.location.origin}/share/${item.share_token}`;
+          const text = `I made a special memory for you! Open it here: ${url}`;
+          window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }}
+      />
     </main>
   );
 }

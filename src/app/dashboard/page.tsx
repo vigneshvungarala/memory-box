@@ -5,7 +5,9 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Popup from "@/components/Popup";
+import ShareModal from "@/components/ShareModal";
 import ImageCropper from "@/components/ImageCropper";
+import { MoreVertical, Edit2, Link as LinkIcon, MessageCircle, Trash2 } from "lucide-react";
 
 const parseImages = (imageUrlString: string | null): string[] => {
   if (!imageUrlString) return [];
@@ -25,6 +27,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareAllModalOpen, setIsShareAllModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState<File[]>([]);
@@ -172,6 +175,28 @@ export default function Dashboard() {
     setPopupConfig({ isOpen: true, type: 'success', title: 'Link Copied!', message: 'Share link copied to clipboard!' });
   };
 
+  const handleShareAll = () => {
+    if (items.length === 0) return;
+    const tokens = items.map((item: any) => item.share_token).join(',');
+    const url = `${window.location.origin}/share-multi?t=${tokens}`;
+    navigator.clipboard.writeText(url);
+    setPopupConfig({ isOpen: true, type: 'success', title: 'Multi-Link Copied!', message: 'Share link for all memories copied to clipboard!' });
+  };
+
+  const handleWhatsAppShare = (token: string) => {
+    const url = `${window.location.origin}/share/${token}`;
+    const text = `I made a special memory for you! Open it here: ${url}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const handleWhatsAppShareAll = () => {
+    if (items.length === 0) return;
+    const tokens = items.map((item: any) => item.share_token).join(',');
+    const url = `${window.location.origin}/share-multi?t=${tokens}`;
+    const text = `I made a special Memory Box for you! Open your surprise here: ${url}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
   const handleCropComplete = (croppedFile: File) => {
     if (imageToCrop) {
       if (imageToCrop.isExisting) {
@@ -225,14 +250,23 @@ export default function Dashboard() {
 
   return (
     <>
-      <main className="animate-fade-in" style={{ padding: "4rem 2rem", maxWidth: "1200px", margin: "0 auto" }}>
+      <main className="animate-fade-in" style={{ padding: "2rem 2rem", maxWidth: "1200px", margin: "0 auto" }}>
         
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "3rem", flexWrap: "wrap", gap: "1rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem", flexWrap: "wrap", gap: "1rem" }}>
           <div>
             <h1 className="gradient-text" style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>Your Memories</h1>
             <p style={{ color: "var(--text-light)" }}>Everything you've saved for the big surprise.</p>
           </div>
           <div style={{ display: "flex", gap: "1rem" }}>
+            {items.length > 0 && (
+              <button 
+                onClick={() => setIsShareAllModalOpen(true)} 
+                className="glass-button" 
+                style={{ background: "white", color: "var(--primary)", border: "1px solid var(--primary)", boxShadow: "none" }}
+              >
+                Share All
+              </button>
+            )}
             <button onClick={() => { closeModal(); setIsModalOpen(true); }} className="glass-button pulse-glow">
               + Add Memory
             </button>
@@ -257,8 +291,8 @@ export default function Dashboard() {
                   key={item.id} 
                   className="memory-item glass" 
                   style={{ 
-                    padding: "1.5rem", 
-                    gap: "1rem",
+                    padding: "1rem", 
+                    gap: "0.5rem",
                     position: "relative",
                     zIndex: openMenuId === item.id ? 100 : 1
                   }}
@@ -267,46 +301,67 @@ export default function Dashboard() {
                   <div style={{ position: "absolute", top: "0.5rem", right: "0.5rem", zIndex: 50 }}>
                     <button 
                       onClick={() => setOpenMenuId(openMenuId === item.id ? null : item.id)}
-                      style={{ background: "var(--bg-light)", border: "none", width: "32px", height: "32px", borderRadius: "50%", display: "flex", justifyContent: "center", alignItems: "center", fontSize: "1.2rem", cursor: "pointer", color: "var(--text-dark)", boxShadow: "0 2px 5px rgba(0,0,0,0.05)" }}
+                      style={{ background: "rgba(255, 255, 255, 0.9)", border: "1px solid rgba(0,0,0,0.05)", width: "36px", height: "36px", borderRadius: "50%", display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer", color: "var(--text-dark)", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", backdropFilter: "blur(4px)" }}
                     >
-                      ⋮
+                      <MoreVertical size={18} />
                     </button>
                     
                     {openMenuId === item.id && (
-                      <div className="solid-card" style={{ 
+                      <div className="solid-card animate-fade-in" style={{ 
                         position: "absolute", 
                         top: "100%", 
                         right: "0", 
                         marginTop: "0.5rem", 
-                        padding: "0.5rem", 
+                        padding: "0.4rem", 
                         display: "flex", 
                         flexDirection: "column", 
-                        gap: "0.5rem",
+                        gap: "0.2rem",
                         minWidth: "180px",
-                        zIndex: 50
+                        zIndex: 50,
+                        border: "1px solid rgba(0,0,0,0.05)",
+                        boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1)",
+                        borderRadius: "12px",
+                        transformOrigin: "top right"
                       }}>
                         <button 
                           onClick={() => openEditModal(item)} 
-                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.5rem 0.8rem", cursor: "pointer", color: "var(--text-dark)", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.5rem", alignItems: "center", fontFamily: "inherit" }}
-                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(157, 78, 221, 0.1)"}
+                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.6rem 0.8rem", cursor: "pointer", color: "var(--text-dark)", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.75rem", alignItems: "center", fontFamily: "inherit", transition: "background 0.2s ease" }}
+                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(157, 78, 221, 0.08)"}
                           onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
                         >
+                          <Edit2 size={16} style={{ color: "var(--text-light)" }} />
                           Edit
                         </button>
+                        
                         <button 
                           onClick={() => { handleShare(item.share_token); setOpenMenuId(null); }} 
-                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.5rem 0.8rem", cursor: "pointer", color: "var(--text-dark)", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.5rem", alignItems: "center", fontFamily: "inherit" }}
-                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(157, 78, 221, 0.1)"}
+                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.6rem 0.8rem", cursor: "pointer", color: "var(--text-dark)", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.75rem", alignItems: "center", fontFamily: "inherit", transition: "background 0.2s ease" }}
+                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(157, 78, 221, 0.08)"}
                           onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
                         >
-                          Share
+                          <LinkIcon size={16} style={{ color: "var(--text-light)" }} />
+                          Copy Link
                         </button>
+                        
+                        <button 
+                          onClick={() => { handleWhatsAppShare(item.share_token); setOpenMenuId(null); }} 
+                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.6rem 0.8rem", cursor: "pointer", color: "#25D366", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.75rem", alignItems: "center", fontFamily: "inherit", fontWeight: "500", transition: "background 0.2s ease" }}
+                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(37, 211, 102, 0.08)"}
+                          onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
+                        >
+                          <MessageCircle size={16} color="#25D366" />
+                          WhatsApp
+                        </button>
+                        
+                        <div style={{ height: "1px", background: "rgba(0,0,0,0.06)", margin: "0.2rem 0" }} />
+                        
                         <button 
                           onClick={() => { handleDelete(item.id, item.image_url); setOpenMenuId(null); }} 
-                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.5rem 0.8rem", cursor: "pointer", color: "#ef4444", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.5rem", alignItems: "center", fontFamily: "inherit" }}
-                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(255, 0, 0, 0.05)"}
+                          style={{ background: "transparent", border: "none", textAlign: "left", padding: "0.6rem 0.8rem", cursor: "pointer", color: "#ef4444", fontSize: "0.95rem", borderRadius: "8px", display: "flex", gap: "0.75rem", alignItems: "center", fontFamily: "inherit", fontWeight: "500", transition: "background 0.2s ease" }}
+                          onMouseOver={(e) => e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)"}
                           onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
                         >
+                          <Trash2 size={16} color="#ef4444" />
                           Delete
                         </button>
                       </div>
@@ -315,7 +370,7 @@ export default function Dashboard() {
                   
                   <Link href={`/dashboard/memory/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     {images.length > 0 ? (
-                      <div className="polaroid" style={{ width: "100%", maxWidth: "320px", alignSelf: "center", marginBottom: "1rem", marginTop: "1.5rem", position: "relative" }}>
+                      <div className="polaroid" style={{ width: "100%", maxWidth: "320px", alignSelf: "center", marginBottom: "0.5rem", marginTop: "0.5rem", position: "relative" }}>
                         <img src={images[0]} alt={item.title} />
                         {images.length > 1 && (
                           <div style={{ position: "absolute", top: "10px", right: "10px", background: "rgba(0,0,0,0.6)", color: "white", padding: "4px 8px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold", backdropFilter: "blur(4px)" }}>
@@ -333,7 +388,7 @@ export default function Dashboard() {
                         {item.description.length > 100 ? item.description.substring(0, 100) + '...' : item.description}
                       </p>
                       
-                      <div style={{ marginTop: "auto", paddingTop: "1.5rem", fontSize: "0.85rem", color: "var(--text-light)" }}>
+                      <div style={{ marginTop: "auto", paddingTop: "1rem", fontSize: "0.85rem", color: "var(--text-light)" }}>
                         {new Date(item.created_at).toLocaleDateString()}
                       </div>
                     </div>
@@ -521,6 +576,14 @@ export default function Dashboard() {
           hideCancel={true}
         />
       )}
+
+      <ShareModal 
+        isOpen={isShareAllModalOpen} 
+        onClose={() => setIsShareAllModalOpen(false)}
+        title="Share your Memory Box"
+        onCopy={handleShareAll}
+        onWhatsApp={handleWhatsAppShareAll}
+      />
     </>
   );
 }
