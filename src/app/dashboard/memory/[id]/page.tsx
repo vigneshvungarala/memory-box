@@ -114,7 +114,7 @@ export default function PrivateMemoryDetail() {
         {images.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "4rem", alignItems: "center" }}>
             {images.map((img, idx) => (
-              <div key={idx} className="polaroid" style={{ width: "100%", maxWidth: "500px", transform: `rotate(${idx % 2 === 0 ? '-2deg' : '2deg'})` }}>
+              <div key={idx} className="polaroid" style={{ width: "100%", maxWidth: "320px", transform: `rotate(${idx % 2 === 0 ? '-2deg' : '2deg'})` }}>
                 <img src={img} alt={`${item.title} - photo ${idx + 1}`} />
                 <div className="polaroid-caption" style={{ fontSize: "1rem", color: "var(--text-light)" }}>
                    {images.length > 1 ? `Photo ${idx + 1} of ${images.length}` : item.title}

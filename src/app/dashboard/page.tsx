@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Popup from "@/components/Popup";
+import ImageCropper from "@/components/ImageCropper";
 
 const parseImages = (imageUrlString: string | null): string[] => {
   if (!imageUrlString) return [];
@@ -34,6 +35,7 @@ export default function Dashboard() {
   const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
   const [memoryDate, setMemoryDate] = useState<string>("");
   const [popupConfig, setPopupConfig] = useState<{ isOpen: boolean, type: 'delete' | 'success', id?: string, imageUrlString?: string | null, title?: string, message?: string } | null>(null);
+  const [imageToCrop, setImageToCrop] = useState<{ src: string, index: number, isExisting?: boolean } | null>(null);
 
   const router = useRouter();
 
@@ -50,6 +52,7 @@ export default function Dashboard() {
     setFiles([]);
     setExistingImageUrls([]);
     setMemoryDate(new Date().toISOString().split('T')[0]);
+    setImageToCrop(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -169,6 +172,20 @@ export default function Dashboard() {
     setPopupConfig({ isOpen: true, type: 'success', title: 'Link Copied!', message: 'Share link copied to clipboard!' });
   };
 
+  const handleCropComplete = (croppedFile: File) => {
+    if (imageToCrop) {
+      if (imageToCrop.isExisting) {
+        setFiles([...files, croppedFile]);
+        setExistingImageUrls(existingImageUrls.filter((_, idx) => idx !== imageToCrop.index));
+      } else {
+        const newFiles = [...files];
+        newFiles[imageToCrop.index] = croppedFile;
+        setFiles(newFiles);
+      }
+    }
+    setImageToCrop(null);
+  };
+
   const confirmDelete = async () => {
     if (!popupConfig || popupConfig.type !== 'delete' || !popupConfig.id) return;
     const { id, imageUrlString } = popupConfig;
@@ -232,23 +249,16 @@ export default function Dashboard() {
             </button>
           </div>
         ) : (
-          <div 
-            className={items.length >= 3 ? "masonry-grid" : ""} 
-            style={items.length < 3 ? { display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "2rem" } : {}}
-          >
+          <div className="memory-grid">
             {items.map((item) => {
               const images = parseImages(item.image_url);
               return (
                 <div 
                   key={item.id} 
-                  className={`${items.length >= 3 ? "masonry-item" : ""} glass`} 
+                  className="memory-item glass" 
                   style={{ 
                     padding: "1.5rem", 
-                    display: "flex", 
-                    flexDirection: "column", 
                     gap: "1rem",
-                    width: items.length < 3 ? "100%" : "auto",
-                    maxWidth: items.length === 1 ? "600px" : items.length === 2 ? "480px" : "none",
                     position: "relative",
                     zIndex: openMenuId === item.id ? 100 : 1
                   }}
@@ -303,9 +313,9 @@ export default function Dashboard() {
                     )}
                   </div>
                   
-                  <Link href={`/dashboard/memory/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column' }}>
+                  <Link href={`/dashboard/memory/${item.id}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     {images.length > 0 ? (
-                      <div className="polaroid" style={{ width: "fit-content", alignSelf: "center", marginBottom: "1rem", marginTop: "1.5rem", position: "relative" }}>
+                      <div className="polaroid" style={{ width: "100%", maxWidth: "320px", alignSelf: "center", marginBottom: "1rem", marginTop: "1.5rem", position: "relative" }}>
                         <img src={images[0]} alt={item.title} />
                         {images.length > 1 && (
                           <div style={{ position: "absolute", top: "10px", right: "10px", background: "rgba(0,0,0,0.6)", color: "white", padding: "4px 8px", borderRadius: "12px", fontSize: "0.8rem", fontWeight: "bold", backdropFilter: "blur(4px)" }}>
@@ -318,12 +328,12 @@ export default function Dashboard() {
                       <h3 style={{ color: "var(--primary)", fontSize: "1.4rem" }}>{item.title}</h3>
                     )}
                     
-                    <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                       <p style={{ marginTop: "0.5rem", color: "var(--text-dark)", lineHeight: "1.5" }}>
                         {item.description.length > 100 ? item.description.substring(0, 100) + '...' : item.description}
                       </p>
                       
-                      <div style={{ marginTop: "1.5rem", fontSize: "0.85rem", color: "var(--text-light)" }}>
+                      <div style={{ marginTop: "auto", paddingTop: "1.5rem", fontSize: "0.85rem", color: "var(--text-light)" }}>
                         {new Date(item.created_at).toLocaleDateString()}
                       </div>
                     </div>
@@ -401,8 +411,20 @@ export default function Dashboard() {
                         <img src={url} alt="Current" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                         <button 
                           type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setImageToCrop({ src: url, index: idx, isExisting: true });
+                          }}
+                          style={{ position: "absolute", bottom: "16px", right: "4px", background: "rgba(255,255,255,0.9)", color: "var(--text-dark)", border: "1px solid var(--primary)", borderRadius: "4px", padding: "2px 4px", fontSize: "10px", cursor: "pointer", fontWeight: "bold", zIndex: 10 }}
+                          title="Crop this photo"
+                        >
+                          Crop
+                        </button>
+                        <button 
+                          type="button"
                           onClick={() => setExistingImageUrls(existingImageUrls.filter(u => u !== url))}
-                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,0,0,0.8)", color: "white", border: "none", borderRadius: "50%", width: "20px", height: "20px", fontSize: "12px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}
+                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,0,0,0.8)", color: "white", border: "none", borderRadius: "50%", width: "20px", height: "20px", fontSize: "12px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 10 }}
                           title="Remove this photo"
                         >
                           ×
@@ -417,6 +439,18 @@ export default function Dashboard() {
                         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "var(--primary)", color: "white", fontSize: "9px", textAlign: "center", padding: "2px", fontWeight: "bold" }}>
                           NEW
                         </div>
+                        <button 
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setImageToCrop({ src: URL.createObjectURL(file), index: idx });
+                          }}
+                          style={{ position: "absolute", bottom: "16px", right: "4px", background: "rgba(255,255,255,0.9)", color: "var(--text-dark)", border: "1px solid var(--primary)", borderRadius: "4px", padding: "2px 4px", fontSize: "10px", cursor: "pointer", fontWeight: "bold" }}
+                          title="Crop this photo"
+                        >
+                          Crop
+                        </button>
                         <button 
                           type="button"
                           onClick={() => setFiles(files.filter(f => f !== file))}
@@ -454,6 +488,14 @@ export default function Dashboard() {
             </form>
           </div>
         </div>
+      )}
+
+      {imageToCrop && (
+        <ImageCropper
+          imageSrc={imageToCrop.src}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setImageToCrop(null)}
+        />
       )}
 
       {popupConfig && popupConfig.type === 'delete' && (
