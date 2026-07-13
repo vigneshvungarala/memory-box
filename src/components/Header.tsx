@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { User } from 'lucide-react';
 
 export default function Header() {
   const [user, setUser] = useState<any>(null);
@@ -49,14 +50,31 @@ export default function Header() {
       </Link>
       <nav style={{ display: 'flex', gap: '1rem' }}>
         {user ? (
-          <>
-            <Link href="/profile" className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'white', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
-              Profile
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <Link href="/profile" className="glass-button" style={{ 
+              textDecoration: 'none', 
+              padding: '6px 16px 6px 6px', 
+              fontSize: '0.95rem', 
+              background: 'white', 
+              color: 'var(--text-dark)', 
+              border: '1px solid rgba(0,0,0,0.05)', 
+              boxShadow: '0 2px 10px rgba(0,0,0,0.03)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.6rem',
+              borderRadius: '24px'
+            }}>
+              <div style={{ background: 'var(--primary)', color: 'white', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <User size={16} />
+              </div>
+              <span style={{ fontWeight: '500', paddingRight: '4px' }}>
+                {user.user_metadata?.full_name ? `Hi, ${user.user_metadata.full_name.split(" ")[0]}` : "Profile"}
+              </span>
             </Link>
-            <button onClick={handleSignOut} className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
+            <button onClick={handleSignOut} className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '0.95rem', background: 'transparent', color: 'var(--text-light)', border: '1px solid #e4e4e7', boxShadow: 'none' }}>
               Log Out
             </button>
-          </>
+          </div>
         ) : (
           <Link href="/login" className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
             Login

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,11 @@ export default function LoginPage() {
         const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              full_name: fullName
+            }
+          }
         });
         if (signUpError) throw signUpError;
         
@@ -77,6 +83,20 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          {isSignUp && (
+            <div className="animate-fade-in">
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500", fontSize: "0.9rem" }}>Full Name</label>
+              <input 
+                type="text" 
+                className="glass-input" 
+                placeholder="John Doe" 
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required={isSignUp}
+              />
+            </div>
+          )}
+          
           <div>
             <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500", fontSize: "0.9rem" }}>Email</label>
             <input 
@@ -140,6 +160,7 @@ export default function LoginPage() {
               setError(null);
               setEmail("");
               setPassword("");
+              setFullName("");
             }}
             style={{ 
               background: "none", 
