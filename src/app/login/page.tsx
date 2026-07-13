@@ -89,7 +89,7 @@ export default function LoginPage() {
               <input 
                 type="text" 
                 className="glass-input" 
-                placeholder="John Doe" 
+                placeholder="Enter your name" 
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required={isSignUp}
