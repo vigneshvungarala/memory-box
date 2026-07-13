@@ -7,7 +7,7 @@ import Link from "next/link";
 import Popup from "@/components/Popup";
 import ShareModal from "@/components/ShareModal";
 import ImageCropper from "@/components/ImageCropper";
-import { MoreVertical, Edit2, Link as LinkIcon, MessageCircle, Trash2 } from "lucide-react";
+import { MoreVertical, Edit2, Link as LinkIcon, MessageCircle, Trash2, Crop, X } from "lucide-react";
 
 const parseImages = (imageUrlString: string | null): string[] => {
   if (!imageUrlString) return [];
@@ -471,18 +471,18 @@ export default function Dashboard() {
                             e.stopPropagation();
                             setImageToCrop({ src: url, index: idx, isExisting: true });
                           }}
-                          style={{ position: "absolute", bottom: "16px", right: "4px", background: "rgba(255,255,255,0.9)", color: "var(--text-dark)", border: "1px solid var(--primary)", borderRadius: "4px", padding: "2px 4px", fontSize: "10px", cursor: "pointer", fontWeight: "bold", zIndex: 10 }}
+                          style={{ position: "absolute", bottom: "4px", right: "4px", background: "rgba(255,255,255,0.95)", color: "var(--text-dark)", border: "none", borderRadius: "50%", width: "26px", height: "26px", display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", zIndex: 10 }}
                           title="Crop this photo"
                         >
-                          Crop
+                          <Crop size={14} />
                         </button>
                         <button 
                           type="button"
                           onClick={() => setExistingImageUrls(existingImageUrls.filter(u => u !== url))}
-                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,0,0,0.8)", color: "white", border: "none", borderRadius: "50%", width: "20px", height: "20px", fontSize: "12px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 10 }}
+                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(239,68,68,0.9)", color: "white", border: "none", borderRadius: "50%", width: "22px", height: "22px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", zIndex: 10 }}
                           title="Remove this photo"
                         >
-                          ×
+                          <X size={14} strokeWidth={2.5} />
                         </button>
                       </div>
                     ))}
@@ -501,18 +501,18 @@ export default function Dashboard() {
                             e.stopPropagation();
                             setImageToCrop({ src: URL.createObjectURL(file), index: idx });
                           }}
-                          style={{ position: "absolute", bottom: "16px", right: "4px", background: "rgba(255,255,255,0.9)", color: "var(--text-dark)", border: "1px solid var(--primary)", borderRadius: "4px", padding: "2px 4px", fontSize: "10px", cursor: "pointer", fontWeight: "bold" }}
+                          style={{ position: "absolute", bottom: "4px", right: "4px", background: "rgba(255,255,255,0.95)", color: "var(--text-dark)", border: "none", borderRadius: "50%", width: "26px", height: "26px", display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", zIndex: 10 }}
                           title="Crop this photo"
                         >
-                          Crop
+                          <Crop size={14} />
                         </button>
                         <button 
                           type="button"
                           onClick={() => setFiles(files.filter(f => f !== file))}
-                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(255,0,0,0.8)", color: "white", border: "none", borderRadius: "50%", width: "20px", height: "20px", fontSize: "12px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center" }}
+                          style={{ position: "absolute", top: "4px", right: "4px", background: "rgba(239,68,68,0.9)", color: "white", border: "none", borderRadius: "50%", width: "22px", height: "22px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", boxShadow: "0 2px 6px rgba(0,0,0,0.15)", zIndex: 10 }}
                           title="Remove this photo"
                         >
-                          ×
+                          <X size={14} strokeWidth={2.5} />
                         </button>
                       </div>
                     ))}
