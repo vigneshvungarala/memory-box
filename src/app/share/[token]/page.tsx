@@ -108,18 +108,21 @@ export default function SharePage() {
 
         {item.description && item.description.trim() !== "" && (
           <div style={{ 
-            background: "rgba(255, 255, 255, 0.5)", 
-            padding: "2.5rem", 
-            borderRadius: "16px", 
+            background: "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            padding: "3rem 2rem", 
+            borderRadius: "24px", 
             width: "100%",
-            boxShadow: "inset 0 2px 10px rgba(0,0,0,0.02)",
-            position: "relative"
+            boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+            position: "relative",
+            backdropFilter: "blur(12px)",
+            marginTop: "1rem"
           }}>
-            <span style={{ position: "absolute", top: "10px", left: "20px", fontSize: "3rem", color: "rgba(157, 78, 221, 0.1)", fontFamily: "serif" }}>"</span>
-            <p style={{ color: "var(--text-dark)", fontSize: "1.2rem", lineHeight: "2", whiteSpace: "pre-wrap", textAlign: "center", position: "relative", zIndex: 1 }}>
+            <span style={{ position: "absolute", top: "-15px", left: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
+            <p style={{ color: "var(--text-dark)", fontSize: "1.25rem", lineHeight: "1.8", whiteSpace: "pre-wrap", textAlign: "center", position: "relative", zIndex: 1, fontStyle: "italic", fontWeight: "500" }}>
               {item.description}
             </p>
-            <span style={{ position: "absolute", bottom: "-10px", right: "20px", fontSize: "3rem", color: "rgba(157, 78, 221, 0.1)", fontFamily: "serif" }}>"</span>
+            <span style={{ position: "absolute", bottom: "-45px", right: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
           </div>
         )}
         

@@ -104,9 +104,24 @@ export default function PrivateMemoryDetail() {
         <h1 className="gradient-text" style={{ fontSize: "2.5rem", marginBottom: "1rem", textAlign: "center", position: "relative", zIndex: 1 }}>{item.title}</h1>
         
         {item.description && item.description.trim() !== "" && (
-          <p style={{ color: "var(--text-dark)", fontSize: "1.1rem", lineHeight: "1.8", textAlign: "center", marginBottom: "3rem", whiteSpace: "pre-wrap", position: "relative", zIndex: 1 }}>
-            "{item.description}"
-          </p>
+          <div style={{ 
+            background: "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            padding: "3rem 2rem", 
+            borderRadius: "24px", 
+            width: "100%",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
+            position: "relative",
+            backdropFilter: "blur(12px)",
+            marginTop: "2rem",
+            marginBottom: "3rem"
+          }}>
+            <span style={{ position: "absolute", top: "-15px", left: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
+            <p style={{ color: "var(--text-dark)", fontSize: "1.25rem", lineHeight: "1.8", whiteSpace: "pre-wrap", textAlign: "center", position: "relative", zIndex: 1, fontStyle: "italic", fontWeight: "500" }}>
+              {item.description}
+            </p>
+            <span style={{ position: "absolute", bottom: "-45px", right: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
+          </div>
         )}
 
         {images.length > 0 && (

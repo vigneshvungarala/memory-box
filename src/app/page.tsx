@@ -36,7 +36,7 @@ export default function Home() {
       )}
 
       <div className="glass" style={{ padding: "5rem 3rem", zIndex: 10, maxWidth: "600px", width: "100%" }}>
-        <h1 className="gradient-text" style={{ fontSize: "4rem", marginBottom: "1.5rem", lineHeight: "1.1" }}>
+        <h1 className="gradient-text" style={{ fontSize: "clamp(2.5rem, 10vw, 4rem)", marginBottom: "1.5rem", lineHeight: "1.1", whiteSpace: "nowrap" }}>
           The Memory Box
         </h1>
         <p style={{ fontSize: "1.3rem", color: "var(--text-light)", marginBottom: "3rem", lineHeight: "1.6" }}>
