@@ -103,6 +103,19 @@ export default function PrivateMemoryDetail() {
 
         <h1 className="gradient-text" style={{ fontSize: "2.5rem", marginBottom: "1rem", textAlign: "center", position: "relative", zIndex: 1 }}>{item.title}</h1>
         
+        {images.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "4rem", alignItems: "center", marginBottom: "2rem" }}>
+            {images.map((img, idx) => (
+              <div key={idx} className="polaroid" style={{ width: "100%", maxWidth: "320px", transform: `rotate(${idx % 2 === 0 ? '-2deg' : '2deg'})` }}>
+                <img src={img} alt={`${item.title} - photo ${idx + 1}`} />
+                <div className="polaroid-caption" style={{ fontSize: "1rem", color: "var(--text-light)" }}>
+                   {images.length > 1 ? `Photo ${idx + 1} of ${images.length}` : item.title}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {item.description && item.description.trim() !== "" && (
           <div style={{ 
             background: "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
@@ -113,7 +126,7 @@ export default function PrivateMemoryDetail() {
             boxShadow: "0 10px 40px rgba(0,0,0,0.2)",
             position: "relative",
             backdropFilter: "blur(12px)",
-            marginTop: "2rem",
+            marginTop: "1rem",
             marginBottom: "3rem"
           }}>
             <span style={{ position: "absolute", top: "-15px", left: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
@@ -121,19 +134,6 @@ export default function PrivateMemoryDetail() {
               {item.description}
             </p>
             <span style={{ position: "absolute", bottom: "-45px", right: "20px", fontSize: "5rem", color: "var(--primary)", opacity: 0.4, fontFamily: "serif", lineHeight: 1 }}>"</span>
-          </div>
-        )}
-
-        {images.length > 0 && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "4rem", alignItems: "center" }}>
-            {images.map((img, idx) => (
-              <div key={idx} className="polaroid" style={{ width: "100%", maxWidth: "320px", transform: `rotate(${idx % 2 === 0 ? '-2deg' : '2deg'})` }}>
-                <img src={img} alt={`${item.title} - photo ${idx + 1}`} />
-                <div className="polaroid-caption" style={{ fontSize: "1rem", color: "var(--text-light)" }}>
-                   {images.length > 1 ? `Photo ${idx + 1} of ${images.length}` : item.title}
-                </div>
-              </div>
-            ))}
           </div>
         )}
 
