@@ -12,7 +12,6 @@ export default function ProfilePage() {
   
   // Profile State
   const [fullName, setFullName] = useState("");
-  const [about, setAbout] = useState("");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   
   // Password State
@@ -33,7 +32,6 @@ export default function ProfilePage() {
       
       if (user.user_metadata) {
         setFullName(user.user_metadata.full_name || "");
-        setAbout(user.user_metadata.about || "");
       }
       setLoading(false);
     };
@@ -47,8 +45,7 @@ export default function ProfilePage() {
     
     const { error } = await supabase.auth.updateUser({
       data: {
-        full_name: fullName,
-        about: about
+        full_name: fullName
       }
     });
 
@@ -123,19 +120,6 @@ export default function ProfilePage() {
                 placeholder="Enter your full name" 
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem", color: "var(--text-dark)", fontWeight: "500" }}>
-                About You
-              </label>
-              <textarea 
-                className="solid-input" 
-                placeholder="A little bit about yourself..." 
-                rows={3}
-                value={about}
-                onChange={(e) => setAbout(e.target.value)}
               />
             </div>
 

@@ -28,20 +28,20 @@ export default function Header() {
   };
 
   return (
-    <header className="glass-header" style={{ 
-      padding: '1rem 2rem', 
-      display: 'flex', 
-      justifyContent: 'space-between', 
+    <header className="glass-header" style={{
+      padding: '1rem 2rem',
+      display: 'flex',
+      justifyContent: 'space-between',
       alignItems: 'center',
       position: 'sticky',
       top: 0,
       zIndex: 100
     }}>
-      <Link href="/" style={{ 
-        textDecoration: 'none', 
-        color: 'var(--primary)', 
-        fontWeight: 'bold', 
-        fontSize: '1.5rem', 
+      <Link href="/" style={{
+        textDecoration: 'none',
+        color: 'var(--primary)',
+        fontWeight: 'bold',
+        fontSize: '1.5rem',
         fontFamily: 'var(--font-outfit)',
         letterSpacing: '-0.05em',
         transition: 'opacity 0.2s'
@@ -51,16 +51,16 @@ export default function Header() {
       <nav style={{ display: 'flex', gap: '1rem' }}>
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Link href="/profile" className="glass-button" style={{ 
-              textDecoration: 'none', 
-              padding: '6px 16px 6px 6px', 
-              fontSize: '0.95rem', 
-              background: 'white', 
-              color: 'var(--text-dark)', 
-              border: '1px solid rgba(0,0,0,0.05)', 
-              boxShadow: '0 2px 10px rgba(0,0,0,0.03)', 
-              display: 'flex', 
-              alignItems: 'center', 
+            <Link href="/profile" className="glass-button" style={{
+              textDecoration: 'none',
+              padding: '6px 16px 6px 6px',
+              fontSize: '0.95rem',
+              background: 'white',
+              color: 'var(--text-dark)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+              display: 'flex',
+              alignItems: 'center',
               gap: '0.6rem',
               borderRadius: '24px'
             }}>
