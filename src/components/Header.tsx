@@ -49,9 +49,14 @@ export default function Header() {
       </Link>
       <nav style={{ display: 'flex', gap: '1rem' }}>
         {user ? (
-          <button onClick={handleSignOut} className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
-            Log Out
-          </button>
+          <>
+            <Link href="/profile" className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'white', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
+              Profile
+            </Link>
+            <button onClick={handleSignOut} className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
+              Log Out
+            </button>
+          </>
         ) : (
           <Link href="/login" className="glass-button" style={{ textDecoration: 'none', padding: '8px 20px', fontSize: '1rem', background: 'transparent', color: 'var(--primary)', border: '1px solid var(--primary)', boxShadow: 'none' }}>
             Login
