@@ -18,11 +18,13 @@ A secure, beautiful, and private collection of your most cherished surprises and
 
 ## Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org/) (React)
+- **Framework:** [Next.js 14/15](https://nextjs.org/) (React 19) with **TypeScript**
 - **Backend & Database:** [Supabase](https://supabase.com/) (Auth, PostgreSQL Database, and Storage Buckets)
+- **Styling:** Custom Vanilla CSS with a state-of-the-art Glassmorphism design system
 - **Icons:** [Lucide React](https://lucide.dev/)
-- **Styling:** Custom Vanilla CSS (Glassmorphism design system)
-- **Image Editing:** React Easy Crop & Browser Canvas API
+- **Image Editing:** [react-easy-crop](https://www.npmjs.com/package/react-easy-crop) for client-side image cropping and compression
+- **Animation & Utilities:** [react-confetti](https://www.npmjs.com/package/react-confetti) for celebratory effects and [react-use](https://www.npmjs.com/package/react-use) for responsive hooks
+- **Deployment:** Vercel (Recommended)
 
 ---
 
