@@ -527,9 +527,8 @@ export default function Dashboard() {
                   ref={fileInputRef}
                   onChange={(e) => {
                     if (e.target.files) {
-                      setFiles(Array.from(e.target.files));
-                    } else {
-                      setFiles([]);
+                      const newFiles = Array.from(e.target.files);
+                      setFiles(prev => [...prev, ...newFiles]);
                     }
                   }}
                   style={{ padding: "8px" }}
